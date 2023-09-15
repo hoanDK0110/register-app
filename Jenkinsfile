@@ -1,18 +1,10 @@
 pipeline {
     agent any
     tools {
+        jdk 'Java17'
         maven 'Maven3'
     }
-    environment {
-        APP_NAME = "app-pipeline"
-        RELEASE = "1.0.0"
-        DOCKER_USER = "hoandk0110"
-        DOCKER_PASS = 'dockerhub'
-        IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
-        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-        JENKINS_API_TOKEN = credentials("jenkins-sonar")
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-    }
+    
     stages {
         stage("Cleanup Workspace") {
             steps {
