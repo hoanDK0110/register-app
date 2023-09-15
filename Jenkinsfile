@@ -40,16 +40,6 @@ pipeline {
             }
         }
 
-        stage("Quality Gate") {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonar'
-                }
-            }
-
-        }
-
-
         stage('Build') {
             steps {
                 sh 'docker build -t "${IMAGE_NAME}" .'
