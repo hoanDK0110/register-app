@@ -47,8 +47,18 @@ pipeline {
                 }
             }
         }
+        
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
+                }
+            }
+        }
 
-        stage("Build & Push Docker Image") {
+        stage("Push Docker Image") {
             steps {
                 script {
                     docker.withRegistry('',DOCKER_PASS) {
