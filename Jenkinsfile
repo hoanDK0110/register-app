@@ -6,7 +6,7 @@ pipeline {
     environment {
 	    APP_NAME = "app-pipeline"
             RELEASE = "1.0.0"
-            DOCKER_USER = "hoanDK0110"
+            DOCKER_USER = "hoandk0110"
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
@@ -50,7 +50,7 @@ pipeline {
 
 	stage('Build') {
       	  steps {
-             sh 'docker build -t hoandk0110/"${IMAGE_NAME}" .'
+             sh 'docker build -t "${IMAGE_NAME}" .'
           }
        }
 	stage('Login') {
@@ -60,7 +60,7 @@ pipeline {
 	    }
 	stage('Push') {
 	      steps {
-	        sh 'docker push hoandk0110/"${IMAGE_NAME}"'
+	        sh 'docker push "${IMAGE_NAME}"'
 	      }
 	    }
   
