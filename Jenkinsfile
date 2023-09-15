@@ -4,6 +4,15 @@ pipeline {
         jdk 'Java17'
         maven 'Maven3'
     }
+    environment {
+        APP_NAME= "java-app"
+        RELEASE = "1.0.0"
+        DOCKER_USER = "hoandk0110"
+        DOCKER_PASS = "dockerhub"
+        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+        JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+    }
     
     stages {
         stage("Cleanup Workspace") {
@@ -40,24 +49,21 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage("Build & Push Docker Image") {
             steps {
-                sh 'docker build -t "${IMAGE_NAME}" .'
-            }
-        }
+                script {
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
 
-        stage('Login') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
+                    }
+                }
             }
-        }
 
-        stage('Push') {
-            steps {
-                sh 'docker push "${IMAGE_NAME}"'
-            }
         }
-
         stage("Trivy Scan") {
             steps {
                 script {
