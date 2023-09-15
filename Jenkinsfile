@@ -22,7 +22,7 @@ pipeline {
 
         stage("Checkout from SCM"){
            steps {
-              git branch: 'main', url: 'https://github.com/hoanDK0110/register-app'
+              git branch: 'main', url: 'https://github.com/hoanDK0110/register-app.git'
            }
         }
 
