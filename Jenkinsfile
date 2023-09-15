@@ -50,7 +50,7 @@ pipeline {
 
 	stage('Build') {
       	  steps {
-             sh 'docker build -t hoandk0110/${IMAGE_NAME} .'
+             sh 'docker build -t hoandk0110/"${IMAGE_NAME}" .'
           }
        }
 	stage('Login') {
@@ -60,7 +60,7 @@ pipeline {
 	    }
 	stage('Push') {
 	      steps {
-	        sh 'docker push hoandk0110/${IMAGE_NAME}'
+	        sh 'docker push hoandk0110/"${IMAGE_NAME}"'
 	      }
 	    }
   
