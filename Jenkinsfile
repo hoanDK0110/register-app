@@ -11,7 +11,8 @@ pipeline {
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	    JENKINS_API_TOKEN = credentials("jenkins-sonar")
-    }
+   	    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+  }
     stages{
         stage("Cleanup Workspace"){
             steps {
@@ -36,7 +37,7 @@ pipeline {
                  sh "mvn test"
            }
        }
-
+	
        stage("SonarQube Analysis"){
            steps {
 	           script {
@@ -47,22 +48,22 @@ pipeline {
            }
        }
 
-
-        stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image = docker.build "${IMAGE_NAME}"
-                    }
-
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image.push("${IMAGE_TAG}")
-                        docker_image.push('latest')
-                    }
-                }
-            }
-
+	stage('Build') {
+      	  steps {
+             sh 'docker build -t hoandk0110/${IMAGE_NAME} .'
+          }
        }
+	stage('Login') {
+	      steps {
+	        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+	      }
+	    }
+	stage('Push') {
+	      steps {
+	        sh 'docker push hoandk0110/${IMAGE_NAME}'
+	      }
+	    }
+  
 
        stage("Trivy Scan") {
            steps {
